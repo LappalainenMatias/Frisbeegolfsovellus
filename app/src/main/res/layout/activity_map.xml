@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff"
+    tools:context=".mapActivity"
+    android:weightSum="100">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100">
+
+        <ImageButton
+            android:padding="15dp"
+            android:scaleType="fitCenter"
+            android:background="@null"
+            android:src="@drawable/goback75"
+            android:layout_weight="15"
+            android:id="@+id/goBack"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:layout_weight="70"
+            android:padding="5dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="#1C1C1C"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="Nimi"
+                android:id="@+id/Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginBottom="10dp"
+                android:textSize="18dp"
+                android:gravity="center"
+                android:text="Kaupunki"
+                android:id="@+id/City"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_weight="15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@null"/>
+    </LinearLayout>
+
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:layout_weight="50"
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:src="@drawable/notfound"/>
+
+
+    <ListView
+        android:focusable="false"
+        android:layout_marginTop="5dp"
+        android:id="@+id/listlanes"
+        android:layout_weight="45"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:listSelector="@android:color/transparent">
+
+    </ListView>
+
+</LinearLayout>

@@ -1,15 +1,15 @@
 package com.example.kartat;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,23 +18,44 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
-import java.util.List;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     String url = "https://frisbeegolfradat.fi/radat/haku";
     ListView listview;
-    String countryList[] = {"India", "China", "australia", "Portugle", "America", "NewZealand"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listview = findViewById(R.id.listview);
-        FloatingActionButton search = findViewById(R.id.fabSearch);
+        final FloatingActionButton search = findViewById(R.id.fabsearch);
+        getwebsite();
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                Intent myIntent = new Intent(MainActivity.this, mapActivity.class);
+
+                TextView txtName = arg1.findViewById(R.id.Name);
+                TextView txtCity = arg1.findViewById(R.id.Place);
+                TextView imgurl = arg1.findViewById(R.id.urljpg);
+                TextView weburl = arg1.findViewById(R.id.urlweb);
+
+                String name = txtName.getText().toString();
+                String city = txtCity.getText().toString();
+                String urlimg = imgurl.getText().toString();
+                String urlweb = weburl.getText().toString();
+
+                myIntent.putExtra("Name", name);
+                myIntent.putExtra("City", city);
+                myIntent.putExtra("urlimg", urlimg);
+                myIntent.putExtra("urlweb", urlweb);
+
+                MainActivity.this.startActivity(myIntent);
+            }
+        });
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,25 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
             }
         });
-        getwebsite();
 
-    }
-
-
-    //Loads image from url and add image to imageview
-    //String url, images url
-    private void loadImageFromUrl(ImageView imageView,String url){
-        Picasso.with(this).load(url)
-                .error(R.drawable.notfound).resize(300,300).centerInside()
-                .into(imageView,new com.squareup.picasso.Callback(){
-                    @Override
-                    public void onSuccess() {
-                    }
-
-                    @Override
-                    public void onError() {
-                    }
-                });
     }
 
     private void getwebsite(){
@@ -117,14 +120,31 @@ public class MainActivity extends AppCompatActivity {
                         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                                 MainActivity.this,
                                 R.layout.activity_list,
-                                R.id.textview,
+                                R.id.Name,
                                 name_place_lanes.toString().split("\n\n")){
 
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
                                 View view = super.getView(position, convertView, parent);
-                                ImageView image = view.findViewById(R.id.imageView);
-                                loadImageFromUrl(image,map_url.toString().split("\n")[position]);
+
+                                String name=all_data.toString().split("\n\n")[position].split("\n")[0];
+                                String place=all_data.toString().split("\n\n")[position].split("\n")[1];
+                                String amount_lanes=all_data.toString().split("\n\n")[position].split("\n")[2];
+                                String imgstring=all_data.toString().split("\n\n")[position].split("\n")[3];
+                                String webstring=all_data.toString().split("\n\n")[position].split("\n")[4];
+
+                                TextView nameView = view.findViewById(R.id.Name);
+                                TextView placeView = view.findViewById(R.id.Place);
+                                TextView lanesView = view.findViewById(R.id.Lanes);
+                                TextView urlimg = view.findViewById(R.id.urljpg);
+                                TextView urlweb = view.findViewById(R.id.urlweb);
+
+                                nameView.setText(name);
+                                placeView.setText(place);
+                                lanesView.setText(amount_lanes);
+                                urlimg.setText(imgstring);
+                                urlweb.setText(webstring);
+
                                 return view;}};
                         listview.setAdapter(arrayAdapter);
                     }

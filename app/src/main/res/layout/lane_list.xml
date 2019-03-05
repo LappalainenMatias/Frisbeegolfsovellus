@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="100"
+    android:id="@+id/listlanesitems"
+    android:descendantFocusability="blocksDescendants">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="100"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+        <TextView
+            android:gravity="center"
+            android:textColor="#1C1C1C"
+            android:id="@+id/lane"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:text="Väylä x"/>
+        <TextView
+            android:gravity="center"
+            android:text="Par y"
+            android:id="@+id/par_length"
+            android:layout_width="match_parent"
+            android:textSize="18dp"
+            android:layout_height="wrap_content"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
