@@ -27,6 +27,7 @@
             android:layout_gravity="center"/>
 
         <LinearLayout
+            android:layout_marginTop="5dp"
             android:layout_weight="70"
             android:padding="5dp"
             android:layout_width="0dp"
@@ -57,9 +58,14 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/maps_button"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/maps"
             android:layout_weight="15"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="70dp"
             android:background="@null"/>
     </LinearLayout>
 

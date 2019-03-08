@@ -1,15 +1,15 @@
 package com.example.kartat;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,20 +19,30 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity {
 
     String url = "https://frisbeegolfradat.fi/radat/haku";
     ListView listview;
+    EditText edittext;
+
+    ArrayList<listData> all_data = new ArrayList<>();//
+    private static CustomAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         listview = findViewById(R.id.listview);
-        final FloatingActionButton search = findViewById(R.id.fabsearch);
+        edittext = findViewById(R.id.editText);
+
         getwebsite();
+        adapter = new CustomAdapter(all_data,getApplicationContext(),listview);
+        listview.setAdapter(adapter);
+
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -57,100 +67,51 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        search.setOnClickListener(new View.OnClickListener() {
+        edittext.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
-
     }
 
     private void getwebsite(){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final StringBuilder all_data = new StringBuilder();//Includes Name of the field, Place of the field (city), Amount of lanes, website url, jpg url
-                final StringBuilder name_place_lanes = new StringBuilder();//Includes Name of the field, Place of the field (city), Amount of lanes
-                final StringBuilder map_url = new StringBuilder();//Includes only jpg url (https://...jpg)
-                String field_name_website_url = "";
                 try {
                     Document doc = Jsoup.connect(url).get();
                     Elements links = doc.select("table#radatlistaus>tbody>tr");
                     for (Element link : links){
+
                         String img_url = link.select("a[href]:contains(Kartta)").attr("href");
                         if(img_url == ""){img_url="Karttaa ei ole";}
                         String field_name = link.select("td.rataCol>a").text();
-                        field_name_website_url = link.select("td.rataCol>a").attr("href")
+                        String field_name_website_url = link.select("td.rataCol>a")
+                                .attr("href")
                                 .replace(" ","_");
                         String place = link.select("td.paikkaCol").text();
                         String lane = link.select("td").get(4).text();
 
-                        all_data.append(field_name)
-                                .append("\n")
-                                .append(place)
-                                .append("\n")
-                                .append("Väyliä : "+lane)
-                                .append("\n")
-                                .append(img_url)
-                                .append("\n")
-                                .append(url+field_name_website_url)
-                                .append("\n")
-                                .append("\n");
-
-                        name_place_lanes.append(field_name)
-                                .append("\n")
-                                .append(place)
-                                .append("\n")
-                                .append("Väyliä : "+lane)
-                                .append("\n")
-                                .append("\n");
-
-                        map_url.append(img_url)
-                                .append("\n");
+                        all_data.add(new listData(field_name,place,"Väyliä : "+lane,img_url,"https://frisbeegolfradat.fi"+field_name_website_url));
 
                     }
                 } catch (IOException e){
-                    all_data.append("Error : "+field_name_website_url+"\n"+e.getMessage());
+                    Log.i("Error", e.toString());
                 }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                                MainActivity.this,
-                                R.layout.activity_list,
-                                R.id.Name,
-                                name_place_lanes.toString().split("\n\n")){
-
-                            @Override
-                            public View getView(int position, View convertView, ViewGroup parent) {
-                                View view = super.getView(position, convertView, parent);
-
-                                String name=all_data.toString().split("\n\n")[position].split("\n")[0];
-                                String place=all_data.toString().split("\n\n")[position].split("\n")[1];
-                                String amount_lanes=all_data.toString().split("\n\n")[position].split("\n")[2];
-                                String imgstring=all_data.toString().split("\n\n")[position].split("\n")[3];
-                                String webstring=all_data.toString().split("\n\n")[position].split("\n")[4];
-
-                                TextView nameView = view.findViewById(R.id.Name);
-                                TextView placeView = view.findViewById(R.id.Place);
-                                TextView lanesView = view.findViewById(R.id.Lanes);
-                                TextView urlimg = view.findViewById(R.id.urljpg);
-                                TextView urlweb = view.findViewById(R.id.urlweb);
-
-                                nameView.setText(name);
-                                placeView.setText(place);
-                                lanesView.setText(amount_lanes);
-                                urlimg.setText(imgstring);
-                                urlweb.setText(webstring);
-
-                                return view;}};
-                        listview.setAdapter(arrayAdapter);
-                    }
-                });
             }
         }).start();
     }
 }
+
+
+
 

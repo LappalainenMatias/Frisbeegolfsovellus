@@ -24,7 +24,7 @@
             android:text="Väylä x"/>
         <TextView
             android:gravity="center"
-            android:text="Par y"
+            android:text=""
             android:id="@+id/par_length"
             android:layout_width="match_parent"
             android:textSize="18dp"
