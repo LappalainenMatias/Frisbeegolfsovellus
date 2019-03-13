@@ -1,17 +1,27 @@
 package com.example.kartat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.dd.ShadowLayout;
+import com.matias.kartat.splash;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +36,12 @@ public class MainActivity extends FragmentActivity {
     String url = "https://frisbeegolfradat.fi/radat/haku";
     ListView listview;
     EditText edittext;
+    ImageButton imagebutton;
+    ShadowLayout imagebtnview;
+    ShadowLayout shadowEDIT;
+
+    Boolean list_view_full = false;
+    Boolean getDataStarted = false;
 
     ArrayList<listData> all_data = new ArrayList<>();//
     private static CustomAdapter adapter;
@@ -36,12 +52,39 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+
+        Intent myIntent = new Intent(MainActivity.this, splash.class);
+        MainActivity.this.startActivity(myIntent);
+
         listview = findViewById(R.id.listview);
         edittext = findViewById(R.id.editText);
+        edittext.setVisibility(View.INVISIBLE);
+        imagebutton = findViewById(R.id.imageButton);
+        imagebutton.setVisibility(View.INVISIBLE);
+        imagebtnview = findViewById(R.id.imagebtnview);
+        shadowEDIT = findViewById(R.id.shadowEdittext);
+        shadowEDIT.setVisibility(View.INVISIBLE);
+        imagebtnview.setVisibility(View.INVISIBLE);
 
-        getwebsite();
-        adapter = new CustomAdapter(all_data,getApplicationContext(),listview);
-        listview.setAdapter(adapter);
+        tryGetData();
+
+        imagebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(list_view_full) {
+                    imagebtnview.setVisibility(View.INVISIBLE);
+                    edittext.setVisibility(View.VISIBLE);
+                    shadowEDIT.setVisibility(View.VISIBLE);
+                    ViewGroup.LayoutParams lp = (FrameLayout.LayoutParams) edittext.getLayoutParams();
+                    lp.width = 70;
+                    edittext.setLayoutParams(lp);
+                    edittext.setFocusableInTouchMode(true);
+                    edittext.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(edittext, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }
+        });
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,8 +107,11 @@ public class MainActivity extends FragmentActivity {
                 myIntent.putExtra("urlweb", urlweb);
 
                 MainActivity.this.startActivity(myIntent);
+                overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+
             }
         });
+        adapter = new CustomAdapter(all_data,MainActivity.this,listview);
 
         edittext.addTextChangedListener(new TextWatcher() {
             @Override
@@ -74,7 +120,13 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s.toString());
+                int edittextLenght = edittext.getText().length()+1;
+                if(list_view_full){
+                    adapter.getFilter().filter(s.toString());
+                }
+                ViewGroup.LayoutParams lp = (FrameLayout.LayoutParams) edittext.getLayoutParams();
+                lp.width = 30*edittextLenght+40;
+                edittext.setLayoutParams(lp);
             }
 
             @Override
@@ -83,33 +135,71 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
-    private void getwebsite(){
+    void tryGetData(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                if(getDataStarted==false) {
+                    getwebsite();
+                    tryGetData();
+                }
+            }
+        }, 5000);
+    }
+
+    private void getwebsite() {
+        try{
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Document doc = Jsoup.connect(url).get();
                     Elements links = doc.select("table#radatlistaus>tbody>tr");
-                    for (Element link : links){
+                    getDataStarted = true;
+                    for (Element link : links) {
 
                         String img_url = link.select("a[href]:contains(Kartta)").attr("href");
-                        if(img_url == ""){img_url="Karttaa ei ole";}
+                        if (img_url == "") {
+                            img_url = "Karttaa ei ole";
+                        }
                         String field_name = link.select("td.rataCol>a").text();
                         String field_name_website_url = link.select("td.rataCol>a")
                                 .attr("href")
-                                .replace(" ","_");
+                                .replace(" ", "_");
                         String place = link.select("td.paikkaCol").text();
                         String lane = link.select("td").get(4).text();
 
-                        all_data.add(new listData(field_name,place,"Väyliä : "+lane,img_url,"https://frisbeegolfradat.fi"+field_name_website_url));
-
+                        all_data.add(new listData(field_name, place, "Väyliä : " + lane, img_url, "https://frisbeegolfradat.fi" + field_name_website_url));
                     }
-                } catch (IOException e){
+
+                } catch (IOException e) {
                     Log.i("Error", e.toString());
                 }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listview.setAdapter(adapter);
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                list_view_full = true;
+                            }
+                        }, 500);
+                        splash.getInstance().finish();
+                        imagebutton.setVisibility(View.VISIBLE);
+                        imagebtnview.setVisibility(View.VISIBLE);
+                    }
+                });
+
             }
+
         }).start();
+        }catch (Exception e){
+            Log.i("Error ",e.toString());
+            Toast.makeText(MainActivity.this, "Verkko yhteyttä ei saatu muodostettua", Toast.LENGTH_LONG).show();
+        }
     }
+
 }
 
 

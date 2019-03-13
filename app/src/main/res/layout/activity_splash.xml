@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.matias.kartat.splash"
+    android:gravity="center_vertical|center_horizontal">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/splash" />
+
+    <TextView
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/imageView"
+        android:id="@+id/textView"
+        android:textSize="18sp"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Ladataan ratoja" />
+</RelativeLayout>

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,6 +42,7 @@ public class mapActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Intent intent = getIntent();
 
+
         String name = intent.getStringExtra("Name");
         String city = intent.getStringExtra("City");
         String jpg = intent.getStringExtra("urlimg");
@@ -52,12 +55,15 @@ public class mapActivity extends AppCompatActivity {
         listview = findViewById(R.id.listlanes);
         maps_button = findViewById(R.id.maps_button);
 
+        final Animation animScale = AnimationUtils.loadAnimation(this, R.anim.scale);
+
         txtName.setText(name);
         txtCity.setText(city);
 
         maps_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                maps_button.startAnimation(animScale);
                 open_maps(web);
             }
         });
@@ -68,9 +74,16 @@ public class mapActivity extends AppCompatActivity {
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                goBack.startAnimation(animScale);
                 finish();
             }
         });
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
     //Loads image from url and add image to imageview
@@ -78,6 +91,7 @@ public class mapActivity extends AppCompatActivity {
     private void loadImageFromUrl(ImageView imageView, String url){
         Picasso.with(this).load(url)
                 .error(R.drawable.notfound).resize(3000,3000).onlyScaleDown().centerInside()
+
                 .into(imageView,new com.squareup.picasso.Callback(){
                     @Override
                     public void onSuccess() {

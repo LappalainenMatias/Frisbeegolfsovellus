@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#ffffff"
     tools:context=".mapActivity"
@@ -39,7 +39,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:textColor="#1C1C1C"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:text="Nimi"
@@ -69,24 +69,23 @@
             android:background="@null"/>
     </LinearLayout>
 
-
     <com.github.chrisbanes.photoview.PhotoView
-        android:layout_weight="50"
         android:id="@+id/map"
+        android:layout_weight="50"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:src="@drawable/notfound"/>
 
+        <ListView
+            android:listSelector="@android:color/transparent"
+            android:focusable="false"
+            android:layout_marginTop="5dp"
+            android:id="@+id/listlanes"
+            android:layout_weight="50"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:elevation="10dp">
 
-    <ListView
-        android:focusable="false"
-        android:layout_marginTop="5dp"
-        android:id="@+id/listlanes"
-        android:layout_weight="45"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:listSelector="@android:color/transparent">
-
-    </ListView>
+        </ListView>
 
 </LinearLayout>

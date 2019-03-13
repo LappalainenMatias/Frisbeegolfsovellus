@@ -78,9 +78,14 @@ public class CustomAdapter extends ArrayAdapter<listData> implements Filterable 
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                dataList = (ArrayList<listData>) results.values;
-                CustomAdapter adapter = new CustomAdapter(dataList,mContext,listview);
-                listview.setAdapter(adapter);
+                try {
+                    dataList = (ArrayList<listData>) results.values;
+                    CustomAdapter adapter = new CustomAdapter(dataList, mContext, listview);
+                    listview.setAdapter(adapter);
+                }
+                catch (Exception e){
+                    Log.i("Error ", e.toString());
+                }
             }
 
             @Override
@@ -92,7 +97,7 @@ public class CustomAdapter extends ArrayAdapter<listData> implements Filterable 
 
                 constraint = constraint.toString().toLowerCase();
                 for (listData list_object : dataList) {
-                    String all_txt = list_object.getName()+list_object.getPlace()+list_object.getAmount_lanes()+list_object.getImgstring()+list_object.getWebstring();
+                    String all_txt = list_object.getName()+" "+list_object.getPlace()+" "+list_object.getAmount_lanes()+" "+list_object.getImgstring()+" "+list_object.getWebstring();
                     if (all_txt.toLowerCase().contains(constraint.toString()))  {
                         FilteredArrayNames.add(list_object);
                     }
