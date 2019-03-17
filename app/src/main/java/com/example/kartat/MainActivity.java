@@ -36,12 +36,11 @@ public class MainActivity extends FragmentActivity {
     String url = "https://frisbeegolfradat.fi/radat/haku";
     ListView listview;
     EditText edittext;
-    ImageButton imagebutton;
-    ShadowLayout imagebtnview;
-    ShadowLayout shadowEDIT;
 
     Boolean list_view_full = false;
     Boolean getDataStarted = false;
+    FrameLayout frame;
+    ShadowLayout shadow;
 
     ArrayList<listData> all_data = new ArrayList<>();//
     private static CustomAdapter adapter;
@@ -57,34 +56,15 @@ public class MainActivity extends FragmentActivity {
         MainActivity.this.startActivity(myIntent);
 
         listview = findViewById(R.id.listview);
-        edittext = findViewById(R.id.editText);
+        edittext = findViewById(R.id.search);
+        frame = findViewById(R.id.framelayout);
+        shadow = findViewById(R.id.shadow);
+
+        shadow.setVisibility(View.INVISIBLE);
         edittext.setVisibility(View.INVISIBLE);
-        imagebutton = findViewById(R.id.imageButton);
-        imagebutton.setVisibility(View.INVISIBLE);
-        imagebtnview = findViewById(R.id.imagebtnview);
-        shadowEDIT = findViewById(R.id.shadowEdittext);
-        shadowEDIT.setVisibility(View.INVISIBLE);
-        imagebtnview.setVisibility(View.INVISIBLE);
+        frame.setVisibility(View.INVISIBLE);
 
         tryGetData();
-
-        imagebutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(list_view_full) {
-                    imagebtnview.setVisibility(View.INVISIBLE);
-                    edittext.setVisibility(View.VISIBLE);
-                    shadowEDIT.setVisibility(View.VISIBLE);
-                    ViewGroup.LayoutParams lp = (FrameLayout.LayoutParams) edittext.getLayoutParams();
-                    lp.width = 70;
-                    edittext.setLayoutParams(lp);
-                    edittext.setFocusableInTouchMode(true);
-                    edittext.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(edittext, InputMethodManager.SHOW_IMPLICIT);
-                }
-            }
-        });
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -120,13 +100,9 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                int edittextLenght = edittext.getText().length()+1;
                 if(list_view_full){
                     adapter.getFilter().filter(s.toString());
                 }
-                ViewGroup.LayoutParams lp = (FrameLayout.LayoutParams) edittext.getLayoutParams();
-                lp.width = 30*edittextLenght+40;
-                edittext.setLayoutParams(lp);
             }
 
             @Override
@@ -186,8 +162,10 @@ public class MainActivity extends FragmentActivity {
                             }
                         }, 500);
                         splash.getInstance().finish();
-                        imagebutton.setVisibility(View.VISIBLE);
-                        imagebtnview.setVisibility(View.VISIBLE);
+                        edittext.setVisibility(View.VISIBLE);
+                        frame.setVisibility(View.VISIBLE);
+                        shadow.setVisibility(View.VISIBLE);
+
                     }
                 });
 

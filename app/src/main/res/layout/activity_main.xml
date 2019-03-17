@@ -11,56 +11,47 @@
 
     <ListView
         android:layout_marginLeft="3dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginRight="3dp"
         android:id="@+id/listview"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
-        android:fadeScrollbars="false"/>
+        android:fadeScrollbars="false"
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingBottom="50dp"/>
 
     <com.dd.ShadowLayout
-        android:id="@+id/shadowEdittext"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_width="wrap_content"
+        android:background="@null"
+        android:id="@+id/shadow"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         app:sl_shadowRadius="4dp"
         app:sl_shadowColor="#AA000000"
-        app:sl_dx="0dp"
-        app:sl_dy="3dp"
-        app:sl_cornerRadius="15dp"
-        android:layout_marginBottom="10dp">
+        app:sl_dx="1dp"
+        app:sl_dy="1dp"
+        app:sl_cornerRadius="7dp"
+>
 
-    <EditText
-        android:textSize="20dp"
-        android:gravity="center"
-        android:background="@drawable/roundcorners"
-        android:id="@+id/editText"
-        android:layout_width="35dp"
-        android:layout_height="55dp"
-        android:maxLength="10"/>
+        <FrameLayout
+            android:id="@+id/framelayout"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/customshape">
 
-    </com.dd.ShadowLayout>
-
-    <com.dd.ShadowLayout
-        android:id="@+id/imagebtnview"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:sl_shadowRadius="4dp"
-        app:sl_shadowColor="#AA000000"
-        app:sl_dx="0dp"
-        app:sl_dy="3dp"
-        app:sl_cornerRadius="15dp"
-        android:layout_marginBottom="10dp">
-
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:background="@drawable/roundcorners"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/search75"/>
+            <EditText
+                android:gravity="center"
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="text"
+                android:hint="Hae..."
+                android:textSize="20dp"
+                android:maxLines="1"
+                android:backgroundTint="#01DF01">
+            </EditText>
+        </FrameLayout>
 
     </com.dd.ShadowLayout>
 </FrameLayout>

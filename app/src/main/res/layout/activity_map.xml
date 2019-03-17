@@ -9,6 +9,12 @@
     tools:context=".mapActivity"
     android:weightSum="100">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shadow">
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -69,23 +75,82 @@
             android:background="@null"/>
     </LinearLayout>
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/map"
-        android:layout_weight="50"
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:src="@drawable/notfound"/>
+        android:layout_height="wrap_content"
+        android:weightSum="3">
 
-        <ListView
-            android:listSelector="@android:color/transparent"
-            android:focusable="false"
-            android:layout_marginTop="5dp"
-            android:id="@+id/listlanes"
-            android:layout_weight="50"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:elevation="10dp">
+        <ImageButton
+            android:background="@null"
+            android:src="@drawable/mapicon"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:id="@+id/maps"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"/>
 
-        </ListView>
+        <ImageButton
+            android:background="@null"
+            android:src="@drawable/scorecard"
+            android:id="@+id/review"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="70dp" />
+
+        <ImageButton
+            android:padding="4dp"
+            android:background="@null"
+            android:id="@+id/info"
+            android:layout_gravity="center"
+            android:src="@drawable/lanedata"
+            android:scaleType="fitCenter"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="70dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3">
+
+        <TextView
+            android:textSize="17sp"
+            android:gravity="center"
+            android:text="Ratakartta"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"  />
+
+        <TextView
+            android:textSize="17sp"
+            android:gravity="center"
+            android:text="Kirjaa tulokset"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textSize="17sp"
+            android:gravity="center"
+            android:text="Väylä Tiedot"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+        </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment"></FrameLayout>
+
 
 </LinearLayout>
